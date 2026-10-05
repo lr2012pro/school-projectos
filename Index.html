@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure Ticket Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      user-select: none; /* Prevents text selection */
+    }
+
+    .ticket-container {
+      position: relative;
+      width: 350px;
+      padding: 24px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #1e1e2f, #2a2a40);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border: 1px solid #3a3a5e;
+      overflow: hidden;
+    }
+
+    /* Simulated Tactile/Security Watermark Overlay */
+    .watermark-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.15;
+    }
+
+    .ticket-header {
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: #00d2ff;
+      margin-bottom: 16px;
+    }
+
+    .ticket-details {
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .qr-box {
+      text-align: center;
+      background-color: #ffffff;
+      padding: 16px;
+      border-radius: 8px;
+    }
+
+    .qr-box img {
+      width: 150px;
+      height: 150px;
+    }
+
+    .timestamp {
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: #333333;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body oncontextmenu="return false;"> <!-- Disables Right Click -->
+
+  <div class="ticket-container" id="ticket">
+    <canvas id="watermarkCanvas" class="watermark-canvas"></canvas>
+    
+    <div class="ticket-header">EVENT PASS - DEMO</div>
+    
+    <div class="ticket-details">
+      <p><strong>Holder:</strong> Liam</p>
+      <p><strong>Access Level:</strong> General Admission</p>
+      <p><strong>Status:</strong> Encrypted & Verified</p>
+    </div>
+
+    <div class="qr-box">
+      <!-- Simulated Dynamic QR Placeholder -->
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=SECURE_PAYLOAD_TOKEN_123" alt="Secure QR">
+      <div class="timestamp" id="liveClock"></div>
+    </div>
+  </div>
+
+  <script>
+    // Prevent Keyboard Screenshots/DevTools Shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'PrintScreen' || (e.ctrlKey && (e.key === 'p' || e.key === 's' || e.key === 'u'))) {
+        alert('Action restricted for ticket security.');
+        e.preventDefault();
+      }
+    });
+
+    // Generate Dynamic Security Pattern (Micro-line Watermark)
+    const canvas = document.getElementById('watermarkCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 350;
+    canvas.height = 400;
+
+    function drawWatermark() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = '#00d2ff';
+      ctx.lineWidth = 0.5;
+
+      for (let i = -200; i < canvas.height + 200; i += 8) {
+        ctx.beginPath();
+        ctx.moveTo(0, i);
+        ctx.lineTo(canvas.width, i + 100);
+        ctx.stroke();
+      }
+    }
+    drawWatermark();
+
+    // Live Moving Timestamp to Prevent Static Video/Screenshot Usage
+    setInterval(() => {
+      document.getElementById('liveClock').innerText = 'VALID: ' + new Date().toISOString().substring(11, 19);
+    }, 1000);
+  </script>
+</body>
+</html>
